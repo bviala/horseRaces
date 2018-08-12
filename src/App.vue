@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img src="./assets/horseLogo.png">
+    <horse-races></horse-races>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HorseRaces from './components/HorseRaces.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    HorseRaces
   }
 }
 </script>
@@ -24,5 +24,9 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+#app img {
+  width: 100px;
+  height: auto;
 }
 </style>
