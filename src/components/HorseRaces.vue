@@ -13,7 +13,7 @@
       v-for="horse in horseList" :key="horse.name"
       :disabled="!raceMode && !buyMode"
       v-on:click="select(horse)">
-      {{ horse.name }} {{ horse.speed }}
+      {{ horse.name }}
     </button>
     <br><br>
     <button
@@ -195,7 +195,7 @@ export default {
   }
   .raceLineUpButton {
     display: block;
-    color: red;
+    color: palevioletred;
     margin: auto;
   }
   .cartButton {
