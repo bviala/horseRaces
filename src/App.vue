@@ -17,6 +17,7 @@ export default {
 </script>
 
 <style>
+@import '~normalize.css';
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -29,4 +30,13 @@ export default {
   width: 100px;
   height: auto;
 }
+body {
+    margin-left: 200px;
+    margin-right: 200px;
+}
+@media only screen and (max-width: 600px) {
+    body {
+      margin: 30px;
+    }
+  }
 </style>
