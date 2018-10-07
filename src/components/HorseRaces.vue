@@ -1,8 +1,21 @@
 <template>
   <div>
-    <h2>There are {{ numberOfHorses }} horses. You have to buy the fastest {{ numberOfHorsesToBuy }} of them.
-    <br>
-     You can race up to {{ horsesPerRace }} horses at a time. How many races do you need ?</h2>
+    <h2>
+      There are
+      <span class="highlighted">
+        {{ numberOfHorses }}
+      </span>
+      horses. You have to buy the fastest
+      <span class="highlighted">
+        {{ numberOfHorsesToBuy }}
+      </span>
+      of them.
+      <br>
+      You can race up to
+      <span class="highlighted">
+        {{ horsesPerRace }}
+      </span>
+        horses at a time. How many races do you need ?</h2>
     <br><br>
     <button
       v-on:click="generateHorses">
@@ -189,6 +202,9 @@ export default {
 }
 </script>
 <style scoped>
+  .highlighted {
+    color: violet;
+  }
   .raceLineUpButton {
     display: block;
     margin: 5px auto;
@@ -206,6 +222,7 @@ export default {
     margin: 3px;
     border: 1px solid #2c3e50;
     border-radius: 3px;
+    background-color: transparent;
   }
   button:hover {
     cursor: pointer;
@@ -215,6 +232,7 @@ export default {
   }
   button[disabled] {
     border: 1px solid lightgray;
+    color: lightgray;
   }
   button[disabled]:hover {
     border: 1px solid lightgray;

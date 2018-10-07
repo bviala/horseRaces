@@ -35,8 +35,8 @@ body {
     margin-right: 200px;
 }
 @media only screen and (max-width: 600px) {
-    body {
-      margin: 30px;
-    }
+  body {
+    margin: 30px;
   }
+}
 </style>
