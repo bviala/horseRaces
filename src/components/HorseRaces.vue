@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- TITLE -->
     <h2>
       There are
       <span class="highlighted">
@@ -15,65 +16,58 @@
       <span class="highlighted">
         {{ horsesPerRace }}
       </span>
-        horses at a time. How many races do you need ?</h2>
-    <br><br>
-    <button
-      v-on:click="generateHorses">
-      Whistle for the horses
-    </button>
-    <br><br>
-    <button
-      v-for="horse in horseList" :key="horse.name"
-      :disabled="!raceMode && !buyMode"
-      v-on:click="select(horse)">
-      {{ horse.name }}
-    </button>
-    <br><br>
-    <button
-      v-if="horseWhistled"
-      v-on:click="enableRaceMode"
-      :disabled="raceMode">
-      Make a race
-    </button>
-    <button
-      v-if="horseWhistled"
-      v-on:click="enableBuyMode"
-      :disabled="buyMode">
-      Buy the horses
-    </button>
+        horses at a time. How many races do you need ?
+    </h2>
 
-    <!-- New race -->
-    <div v-if="raceMode">
-      <h4>Click on the horses you wish to race !</h4>
-      <h4>Line up:</h4>
+    <!-- MODE SELECTION -->
+    <div class="modeSelection">
+      <div class="tab"
+        @click="mode = 'race'"
+        :class="{ selected: mode === 'race' }">
+        Make a race
+      </div>
+      <div class="tab"
+        @click="mode = 'buy'"
+        :class="{ selected: mode === 'buy' }">
+        Buy the horses
+      </div>
+    </div>
+
+    <h3>Select the horses you wish to {{ mode }} !</h3>
+
+    <!-- HORSE LIST -->
+    <div v-if="mode === 'race'">
+      <div class="horseList">
+        <button
+          v-for="horse in horseList" :key="horse.name"
+          @click="toggleRaceParticipation(horse)"
+          :disabled="isRaceReady && !raceList.includes(horse)"
+          :class="{ selected: raceList.includes(horse) }">
+          {{ horse.name }}
+        </button>
+      </div>
+
       <button
-        class="raceLineUpButton"
-        v-for="horse in raceList" :key="horse.name"
-        v-on:click="toggleRaceParticipation(horse)">
-        {{ horse.name }}
-      </button>
-      <br>
-      <button
-          v-if="isRaceReady"
-          v-on:click="startRace">
-          Start race !
+        :disabled="!isRaceReady"
+        @click="startRace">
+        Start race !
       </button>
     </div>
 
-    <!-- Buy horses -->
-    <div v-if="buyMode">
-      <h4>Click on the horses you wish to buy !</h4>
-      <h4>Horse cart:</h4>
+    <div v-if="mode === 'buy'">
+      <div class="horseList">
+        <button
+          v-for="horse in horseList" :key="horse.name"
+          @click="toggleCartParticipation(horse)"
+          :disabled="isCartReady && !horseCart.includes(horse)"
+          :class="{ selected: horseCart.includes(horse) }">
+          {{ horse.name }}
+        </button>
+      </div>
+
       <button
-        class="cartButton"
-        v-for="horse in horseCart" :key="horse.name"
-        v-on:click="toggleCartParticipation(horse)">
-        {{ horse.name }}
-      </button>
-      <br>
-      <button
-        v-if="isCartReady"
-        v-on:click="buyHorses">
+        :disabled="!isCartReady"
+        @click="buyHorses">
         Buy horses !
       </button>
     </div>
@@ -105,10 +99,12 @@ export default {
       horseCart: [],
       fastest3Horses: [],
       raceResults: [],
-      raceMode: false,
-      buyMode: false,
+      mode: 'race',
       raceCounter: 0
     }
+  },
+  created () {
+    this.generateHorses()
   },
   methods: {
     reset () {
@@ -117,13 +113,11 @@ export default {
       this.raceResults = []
       this.fastest3Horses = []
       this.horseCart = []
-      this.raceMode = false
-      this.buyMode = false
+      this.mode = 'race'
       this.raceCounter = 0
+      this.generateHorses()
     },
     generateHorses () {
-      this.reset()
-
       let horseNames = []
       while (horseNames.length < 25) {
         const name = petNames.random()
@@ -138,10 +132,6 @@ export default {
       const orderedHorseList = this.horseList.slice().sort((horse1, horse2) => horse2.speed - horse1.speed)
       orderedHorseList.splice(3)
       this.fastest3Horses = orderedHorseList
-    },
-    select (horse) {
-      if (this.raceMode) this.toggleRaceParticipation(horse)
-      if (this.buyMode) this.toggleCartParticipation(horse)
     },
     toggleRaceParticipation (horse) {
       if (this.raceList.includes(horse)) {
@@ -175,23 +165,12 @@ export default {
         else if (this.raceCounter === 7) msg = 'Congratulation ! Seems like you found the optimal solution'
         else if (this.raceCounter <= 11) msg = 'Good job ! But you could have find out with fewer races. Work on it !'
         else if (this.raceCounter > 11) msg = 'Hmm that\'s right, but you\'re not very effective.'
-      } else msg = 'Sorry, that was not the 3 fastest horses of the stud. Try again !'
+      } else msg = 'Sorry, that was not the 3 fastest horses in the stud. Try again !'
       window.alert(msg)
       this.reset()
-    },
-    enableRaceMode () {
-      this.buyMode = false
-      this.raceMode = true
-    },
-    enableBuyMode () {
-      this.raceMode = false
-      this.buyMode = true
     }
   },
   computed: {
-    horseWhistled () {
-      return this.horseList.length > 0
-    },
     isRaceReady () {
       return this.raceList.length === this.horsesPerRace
     },
@@ -204,6 +183,30 @@ export default {
 <style scoped>
   .highlighted {
     color: violet;
+  }
+  .modeSelection {
+    margin: 20px;
+  }
+  .tab {
+    margin: 5px;
+    padding: 10px;
+    display: inline-block;
+    font-size: 13pt;
+  }
+  .tab.selected {
+    border-bottom: 2px solid violet;
+  }
+  .tab:hover {
+    cursor: pointer;
+  }
+  .main {
+    display: flex;
+  }
+  .horseList {
+    margin-bottom: 20px;
+  }
+  .action {
+    flex: 1;
   }
   .raceLineUpButton {
     display: block;
@@ -219,10 +222,14 @@ export default {
   }
   button {
     padding: 7px;
-    margin: 3px;
-    border: 1px solid #2c3e50;
-    border-radius: 3px;
+    margin: 5px;
+    border: none;
     background-color: transparent;
+  }
+  button.selected {
+    border-bottom : 1px solid violet;
+    /* background-color: #2c3e50;
+    color: white; */
   }
   button:hover {
     cursor: pointer;
@@ -230,12 +237,13 @@ export default {
   button:focus{
     outline: none;
   }
+  button:active{
+    color: inherit;
+  }
   button[disabled] {
-    border: 1px solid lightgray;
     color: lightgray;
   }
   button[disabled]:hover {
-    border: 1px solid lightgray;
     cursor: default;
   }
 </style>
